@@ -1,6 +1,6 @@
 enum ProcessStatus {
   PENDING = 'PENDING',
-  IN_PROGRESS = 'IN_PROGRESS',
+  RUNNING = 'IN_PROGRESS',
   SUCCESS = 'SUCCESS',
   FAILURE = 'FAILURE',
 }

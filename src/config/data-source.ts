@@ -3,7 +3,7 @@ import configuration from './configuration';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
 const databaseConfig = configuration().database;
-console.log(databaseConfig);
+
 const dataSource = new DataSource({
   type: 'postgres',
   host: databaseConfig.host,
