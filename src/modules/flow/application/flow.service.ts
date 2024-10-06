@@ -12,7 +12,11 @@ export class FlowService {
   ) {}
 
   async run(id: number) {
-    const flow = await this.flowRepository.findOneByOrFail({ id });
+    const flow = await this.flowRepository.findOneByOrFail({
+      id,
+      status: ProcessStatus.PENDING,
+    });
+
     await this.#start(flow);
 
     this.#runNextStep(flow);

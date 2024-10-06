@@ -3,20 +3,30 @@ import functions, { BlockFunctions } from './functions';
 import { BlockRepository } from '../domain/block.repository';
 import Block from '../domain/block.entity';
 import { Variable } from 'src/modules/variable/domain/variable.entity';
+import { VariableService } from 'src/modules/variable/application/variable.service';
+import Handlebars from 'handlebars';
 
 @Injectable()
 export class BlockService {
   functions: BlockFunctions;
-  constructor(private readonly blockRepository: BlockRepository) {
+  constructor(
+    private readonly blockRepository: BlockRepository,
+    private readonly variableService: VariableService,
+  ) {
     this.functions = functions;
   }
 
   async run(id: number, variables: Variable[]) {
-    const block = await this.blockRepository.findOneByOrFail({ id });
+    const block = await this.blockRepository.findOneOrFail({
+      relations: { step: true },
+      where: {
+        id,
+      },
+    });
     const blockFunction = this.#getBlockFunction(block);
     const evaluatedParams = this.#evaluateParams(block, variables);
-
-    return blockFunction(evaluatedParams);
+    const result = await blockFunction(evaluatedParams);
+    return this.variableService.createFromObject(block.step.flowId, result);
   }
 
   #getBlockFunction(block: Block) {
@@ -27,10 +37,18 @@ export class BlockService {
 
   #evaluateParams(block: Block, variables: Variable[]) {
     const { parameters } = block;
+    const objectFromVariables = this.#objectFromVariables(variables);
 
-    return Object.entries(parameters).reduce((acc, [key, value]) => {
-      const variable = variables.find((variable) => variable.name === value);
-      return { ...acc, [key]: variable.value };
+    const template = Handlebars.compile(JSON.stringify(parameters))(
+      objectFromVariables,
+    );
+
+    return JSON.parse(template);
+  }
+
+  #objectFromVariables(variables: Variable[]) {
+    return variables.reduce((acc, variable) => {
+      return { ...acc, [variable.slug]: variable.value };
     }, {});
   }
 }

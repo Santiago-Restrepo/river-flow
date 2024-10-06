@@ -21,7 +21,7 @@ export default class Step extends BaseEntity {
   @Column('int')
   flowId: number;
 
-  @OneToOne(() => Block)
+  @OneToOne(() => Block, (block) => block.step)
   @JoinColumn()
   block: Block;
 

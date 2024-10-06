@@ -5,7 +5,7 @@ import { Column, Entity, ManyToOne } from 'typeorm';
 @Entity()
 export class Variable extends BaseEntity {
   @Column({ type: 'varchar', length: 255 })
-  name: string;
+  slug: string;
 
   @Column({ type: 'varchar', length: 255 })
   value: string;

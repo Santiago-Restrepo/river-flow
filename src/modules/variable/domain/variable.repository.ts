@@ -1,10 +1,10 @@
 import { DataSource, Repository } from 'typeorm';
-import Step from './step.entity';
+import { Variable } from './variable.entity';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class StepRepository extends Repository<Step> {
+export class VariableRepository extends Repository<Variable> {
   constructor(private datasource: DataSource) {
-    super(Step, datasource.createEntityManager());
+    super(Variable, datasource.createEntityManager());
   }
 }

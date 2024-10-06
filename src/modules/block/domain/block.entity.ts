@@ -13,6 +13,6 @@ export default class Block extends BaseEntity {
   @Column('jsonb')
   parameters: Record<string, string>;
 
-  @OneToOne(() => Step)
+  @OneToOne(() => Step, (step) => step.block)
   step: Step;
 }

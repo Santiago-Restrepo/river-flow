@@ -33,7 +33,7 @@ export class StepService {
   }
 
   async findOne(findOneOptions?: FindOneOptions<Step>) {
-    return this.stepRepository.findOneOrFail({
+    return this.stepRepository.findOne({
       ...findOneOptions,
       relations: {
         flow: {
