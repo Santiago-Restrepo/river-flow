@@ -1,24 +1,26 @@
 import { Injectable } from '@nestjs/common';
 import { VariableRepository } from '../domain/variable.repository';
 import { Variable } from '../domain/variable.entity';
+import Step from 'src/modules/step/domain/step.entity';
 
 @Injectable()
 export class VariableService {
   constructor(private readonly variableRepository: VariableRepository) {}
 
-  createFromObject(flowId: number, object: any) {
+  createFromObject(step: Step, object: any) {
     const flatObject = this.#flatObject(object);
-    const variables = this.#flatObjectToVariables(flowId, flatObject);
+    const variables = this.#flatObjectToVariables(step, flatObject);
     return this.variableRepository.save(variables);
   }
 
-  #flatObjectToVariables(flowId: number, object: any) {
+  #flatObjectToVariables(step: Step, object: any) {
     return Object.keys(object).map((key) => {
       const value = object[key];
       const variable = new Variable();
       variable.slug = key;
       variable.value = value;
-      variable.flowId = flowId;
+      variable.flowId = step.flowId;
+      variable.stepId = step.id;
       return variable;
     });
   }

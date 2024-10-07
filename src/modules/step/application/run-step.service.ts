@@ -7,19 +7,22 @@ import Step from '../domain/step.entity';
 import { FindOneOptions } from 'typeorm';
 
 @Injectable()
-export class StepService {
+export class RunStepService {
   constructor(
     private readonly stepRepository: StepRepository,
     private readonly blockService: BlockService,
   ) {}
 
-  async run(id: number, variables: Variable[]) {
-    const step = await this.stepRepository.findOneByOrFail({ id });
-    await this.#start(step);
-
-    await this.blockService.run(step.blockId, variables);
-
-    await this.#finish(step);
+  async run(step: Step, variables: Variable[]) {
+    try {
+      await this.#start(step);
+      await this.blockService.run(step.blockId, variables);
+      await this.#finish(step);
+      return step;
+    } catch (error) {
+      await this.#finish(step, ProcessStatus.FAILURE, error.message);
+      return step;
+    }
   }
 
   async #start(step: Step) {
@@ -27,8 +30,13 @@ export class StepService {
     await this.stepRepository.save(step);
   }
 
-  async #finish(step: Step) {
-    step.status = ProcessStatus.SUCCESS;
+  async #finish(
+    step: Step,
+    status: ProcessStatus = ProcessStatus.SUCCESS,
+    errorMessage?: string,
+  ) {
+    step.status = status;
+    step.errorMessage = errorMessage;
     await this.stepRepository.save(step);
   }
 

@@ -26,7 +26,7 @@ export class BlockService {
     const blockFunction = this.#getBlockFunction(block);
     const evaluatedParams = this.#evaluateParams(block, variables);
     const result = await blockFunction(evaluatedParams);
-    return this.variableService.createFromObject(block.step.flowId, result);
+    return this.variableService.createFromObject(block.step, result);
   }
 
   #getBlockFunction(block: Block) {

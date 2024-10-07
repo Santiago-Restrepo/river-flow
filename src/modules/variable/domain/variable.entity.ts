@@ -1,8 +1,11 @@
 import Flow from 'src/modules/flow/domain/flow.entity';
+import Step from 'src/modules/step/domain/step.entity';
 import BaseEntity from 'src/shared/base-entity.entity';
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, Index, ManyToOne } from 'typeorm';
 
 @Entity()
+//Slug with stepId should be unique
+@Index(['slug', 'stepId'], { unique: true })
 export class Variable extends BaseEntity {
   @Column({ type: 'varchar', length: 255 })
   slug: string;
@@ -16,6 +19,12 @@ export class Variable extends BaseEntity {
   @Column({ type: 'int' })
   flowId: number;
 
+  @Column({ type: 'int' })
+  stepId: number;
+
   @ManyToOne(() => Flow, (flow) => flow.variables)
   flow: Flow;
+
+  @ManyToOne(() => Step, (step) => step.variables)
+  step: Step;
 }
