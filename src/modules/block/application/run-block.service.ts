@@ -7,7 +7,7 @@ import { VariableService } from 'src/modules/variable/application/variable.servi
 import Handlebars from 'handlebars';
 
 @Injectable()
-export class BlockService {
+export class RunBlockService {
   functions: BlockFunctions;
   constructor(
     private readonly blockRepository: BlockRepository,

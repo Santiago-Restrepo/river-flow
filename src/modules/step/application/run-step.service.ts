@@ -2,21 +2,21 @@ import { Injectable } from '@nestjs/common';
 import { StepRepository } from '../domain/step.repository';
 import { Variable } from 'src/modules/variable/domain/variable.entity';
 import ProcessStatus from 'src/shared/enums/process-status.enum';
-import { BlockService } from 'src/modules/block/application/block.service';
 import Step from '../domain/step.entity';
 import { FindOneOptions } from 'typeorm';
+import { RunBlockService } from 'src/modules/block/application/run-block.service';
 
 @Injectable()
 export class RunStepService {
   constructor(
     private readonly stepRepository: StepRepository,
-    private readonly blockService: BlockService,
+    private readonly runBlockService: RunBlockService,
   ) {}
 
   async run(step: Step, variables: Variable[]) {
     try {
       await this.#start(step);
-      await this.blockService.run(step.blockId, variables);
+      await this.runBlockService.run(step.blockId, variables);
       await this.#finish(step);
       return step;
     } catch (error) {

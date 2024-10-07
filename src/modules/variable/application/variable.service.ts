@@ -8,7 +8,8 @@ export class VariableService {
   constructor(private readonly variableRepository: VariableRepository) {}
 
   createFromObject(step: Step, object: any) {
-    const flatObject = this.#flatObject(object);
+    const prefix = `step.${step.id}`;
+    const flatObject = this.#flatObject(object, prefix);
     const variables = this.#flatObjectToVariables(step, flatObject);
     return this.variableRepository.save(variables);
   }
@@ -25,9 +26,9 @@ export class VariableService {
     });
   }
 
-  #flatObject(obj: any) {
+  #flatObject(obj: any, prefix = '') {
     const result = {};
-    const stack = [{ parentKey: '', value: obj }];
+    const stack = [{ parentKey: prefix, value: obj }];
 
     while (stack.length > 0) {
       const { parentKey, value } = stack.pop();
