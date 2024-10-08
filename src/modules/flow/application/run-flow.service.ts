@@ -50,10 +50,7 @@ export class RunFlowService {
       return;
     }
 
-    const nextStepResult = await this.runStepService.run(
-      nextStep,
-      nextStep.flow.variables,
-    );
+    const nextStepResult = await this.runStepService.run(nextStep);
 
     if (nextStepResult.status === ProcessStatus.FAILURE) {
       await this.#finish(

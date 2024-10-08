@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { StepRepository } from '../domain/step.repository';
-import { Variable } from 'src/modules/variable/domain/variable.entity';
 import ProcessStatus from 'src/shared/enums/process-status.enum';
 import Step from '../domain/step.entity';
 import { FindOneOptions } from 'typeorm';
@@ -13,13 +12,14 @@ export class RunStepService {
     private readonly runBlockService: RunBlockService,
   ) {}
 
-  async run(step: Step, variables: Variable[]) {
+  async run(step: Step) {
     try {
       await this.#start(step);
-      await this.runBlockService.run(step.blockId, variables);
+      await this.runBlockService.run(step.block);
       await this.#finish(step);
       return step;
     } catch (error) {
+      console.log(error);
       await this.#finish(step, ProcessStatus.FAILURE, error.message);
       return step;
     }
@@ -44,8 +44,10 @@ export class RunStepService {
     return this.stepRepository.findOne({
       ...findOneOptions,
       relations: {
-        flow: {
-          variables: true,
+        flow: true,
+        block: {
+          functionBlock: true,
+          parameters: true,
         },
       },
     });

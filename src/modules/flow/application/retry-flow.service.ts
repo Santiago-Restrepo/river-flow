@@ -19,12 +19,11 @@ export class RetryFlowService {
     return this.runFlowService.run(flow.id);
   }
 
-  #findFlowToRetry(id: number) {
-    const flow = this.flowRepository.findOneBy({
+  async #findFlowToRetry(id: number) {
+    const flow = await this.flowRepository.findOneBy({
       id,
       status: ProcessStatus.FAILURE,
     });
-
     if (!flow)
       throw new NotFoundException(`Failured flow with id ${id} not found`);
 

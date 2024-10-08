@@ -1,5 +1,4 @@
-import Flow from 'src/modules/flow/domain/flow.entity';
-import Step from 'src/modules/step/domain/step.entity';
+import Block from 'src/modules/block/domain/block.entity';
 import BaseEntity from 'src/shared/base-entity.entity';
 import { Column, Entity, ManyToOne } from 'typeorm';
 
@@ -7,23 +6,14 @@ import { Column, Entity, ManyToOne } from 'typeorm';
 //Slug with stepId should be unique
 export class Variable extends BaseEntity {
   @Column({ type: 'varchar', unique: true, length: 255 })
-  slug: string;
+  key: string;
 
   @Column({ type: 'varchar', length: 255 })
   value: string;
 
-  @Column({ type: 'text', nullable: true })
-  description: string;
+  @Column({ type: 'int', nullable: true })
+  blockId: number | null;
 
-  @Column({ type: 'int' })
-  flowId: number;
-
-  @Column({ type: 'int' })
-  stepId: number;
-
-  @ManyToOne(() => Flow, (flow) => flow.variables)
-  flow: Flow;
-
-  @ManyToOne(() => Step, (step) => step.variables)
-  step: Step;
+  @ManyToOne(() => Block, (block) => block.variables)
+  block: Block;
 }
