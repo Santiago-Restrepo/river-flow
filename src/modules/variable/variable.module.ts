@@ -1,9 +1,15 @@
 import { Module } from '@nestjs/common';
 import { VariableService } from './application/variable.service';
-import { VariableRepository } from './domain/variable.repository';
+import { VariableRepositoryImpl } from './application/variable.repository.impl';
 
 @Module({
-  providers: [VariableService, VariableRepository],
+  providers: [
+    VariableService,
+    {
+      provide: 'VariableRepository',
+      useClass: VariableRepositoryImpl,
+    },
+  ],
   exports: [VariableService],
 })
 export class VariableModule {}
