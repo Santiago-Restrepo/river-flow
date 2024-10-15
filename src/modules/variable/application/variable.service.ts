@@ -7,8 +7,8 @@ import Block from 'src/modules/block/domain/block.entity';
 export class VariableService {
   constructor(private readonly variableRepository: VariableRepository) {}
 
-  findAvailable() {
-    return this.variableRepository.find();
+  findAvailableByBlock(block: Block) {
+    return this.variableRepository.findAvailableByBlock(block);
   }
 
   createFromBlockOutput(block: Block, blockResults: VariableValue) {

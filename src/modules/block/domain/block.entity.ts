@@ -3,7 +3,14 @@ import { Parameter } from 'src/modules/parameter/domain/parameter.entity';
 import Step from 'src/modules/step/domain/step.entity';
 import { Variable } from 'src/modules/variable/domain/variable.entity';
 import BaseEntity from 'src/shared/base-entity.entity';
-import { Column, Entity, ManyToOne, OneToMany, OneToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+} from 'typeorm';
 
 enum BlockType {
   FUNCTION = 'FUNCTION',
@@ -19,10 +26,14 @@ export default class Block extends BaseEntity {
   @Column({ type: 'int', nullable: true })
   functionBlockId: number | null;
 
+  @Column({ type: 'int' })
+  stepId: number;
+
   @ManyToOne(() => FunctionBlock)
   functionBlock: FunctionBlock;
 
   @OneToOne(() => Step, (step) => step.block)
+  @JoinColumn()
   step: Step;
 
   @OneToMany(() => Variable, (variable) => variable.block)

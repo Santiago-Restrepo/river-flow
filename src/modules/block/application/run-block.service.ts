@@ -15,7 +15,8 @@ export class RunBlockService {
 
   async run(block: Block) {
     const blockFunction = this.#getBlockFunction(block);
-    const availableVariables = await this.variableService.findAvailable();
+    const availableVariables =
+      await this.variableService.findAvailableByBlock(block);
     const evaluatedParams = this.#evaluateParams(
       block,
       block.parameters,
@@ -46,7 +47,6 @@ export class RunBlockService {
       parameters,
       objectFromVariables,
     );
-    console.log(objectFromParameters);
     const template = Handlebars.compile(JSON.stringify(parametersTemplate))(
       objectFromParameters,
     );
@@ -65,7 +65,6 @@ export class RunBlockService {
     parameters: Parameter[],
     availableVariablesObj: object,
   ) {
-    console.log(availableVariablesObj);
     return parameters.reduce((acc, parameter) => {
       const value = Handlebars.compile(parameter.value)(availableVariablesObj);
       return { ...acc, [parameter.functionParameterKey]: value };

@@ -19,7 +19,7 @@ export class RunStepService {
       await this.#finish(step);
       return step;
     } catch (error) {
-      console.log(error);
+      console.error(error);
       await this.#finish(step, ProcessStatus.FAILURE, error.message);
       return step;
     }
@@ -46,6 +46,7 @@ export class RunStepService {
       relations: {
         flow: true,
         block: {
+          step: true,
           functionBlock: true,
           parameters: true,
         },
