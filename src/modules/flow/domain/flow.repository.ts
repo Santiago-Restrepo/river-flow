@@ -1,10 +1,11 @@
-import { DataSource, Repository } from 'typeorm';
+import { EntityManager, FindOneOptions, FindOptionsWhere } from 'typeorm';
 import Flow from './flow.entity';
-import { Injectable } from '@nestjs/common';
 
-@Injectable()
-export class FlowRepository extends Repository<Flow> {
-  constructor(private datasource: DataSource) {
-    super(Flow, datasource.createEntityManager());
-  }
+export interface FlowRepository {
+  manager: EntityManager;
+  findOneBy(
+    where: FindOptionsWhere<Flow> | FindOptionsWhere<Flow>[],
+  ): Promise<Flow | null>;
+  findOne(findOneOptions?: FindOneOptions<Flow>): Promise<Flow | null>;
+  save(flow: Flow): Promise<Flow>;
 }

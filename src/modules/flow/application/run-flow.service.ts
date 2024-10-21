@@ -1,12 +1,13 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { FlowRepository } from '../domain/flow.repository';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import Flow from '../domain/flow.entity';
 import ProcessStatus from 'src/shared/enums/process-status.enum';
 import { RunStepService } from 'src/modules/step/application/run-step.service';
+import { FlowRepository } from '../domain/flow.repository';
 
 @Injectable()
 export class RunFlowService {
   constructor(
+    @Inject('FlowRepository')
     private readonly flowRepository: FlowRepository,
     private readonly runStepService: RunStepService,
   ) {}
