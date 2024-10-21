@@ -1,10 +1,7 @@
-import { DataSource, Repository } from 'typeorm';
+import { FindOneOptions } from 'typeorm';
 import Step from './step.entity';
-import { Injectable } from '@nestjs/common';
 
-@Injectable()
-export class StepRepository extends Repository<Step> {
-  constructor(private datasource: DataSource) {
-    super(Step, datasource.createEntityManager());
-  }
+export interface StepRepository {
+  findOne(findOneOptions?: FindOneOptions<Step>): Promise<Step | null>;
+  save(step: Step): Promise<Step>;
 }

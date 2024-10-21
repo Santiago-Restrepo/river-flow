@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { StepRepository } from '../domain/step.repository';
 import ProcessStatus from 'src/shared/enums/process-status.enum';
 import Flow from 'src/modules/flow/domain/flow.entity';
 import { EntityManager } from 'typeorm';
@@ -7,7 +6,7 @@ import Step from '../domain/step.entity';
 
 @Injectable()
 export class ResetStepService {
-  constructor(private readonly stepRepository: StepRepository) {}
+  constructor() {}
 
   async resetFlowSteps(flow: Flow, transaction: EntityManager) {
     const steps = await transaction.find(Step, {

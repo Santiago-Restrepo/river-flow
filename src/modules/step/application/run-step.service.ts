@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { StepRepository } from '../domain/step.repository';
 import ProcessStatus from 'src/shared/enums/process-status.enum';
 import Step from '../domain/step.entity';
@@ -8,6 +8,7 @@ import { RunBlockService } from 'src/modules/block/application/run-block.service
 @Injectable()
 export class RunStepService {
   constructor(
+    @Inject('StepRepository')
     private readonly stepRepository: StepRepository,
     private readonly runBlockService: RunBlockService,
   ) {}
