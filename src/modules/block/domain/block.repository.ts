@@ -1,10 +1,2 @@
-import { Injectable } from '@nestjs/common';
-import { DataSource, Repository } from 'typeorm';
-import Block from './block.entity';
-
-@Injectable()
-export class BlockRepository extends Repository<Block> {
-  constructor(private datasource: DataSource) {
-    super(Block, datasource.createEntityManager());
-  }
-}
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface BlockRepository {}
