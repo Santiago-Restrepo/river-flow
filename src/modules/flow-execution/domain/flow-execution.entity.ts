@@ -17,7 +17,7 @@ export default class FlowExecution extends BaseEntity {
   status: ExecutionStatus;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  startedAt: Date;
+  startedAt?: Date;
 
   @Column({ type: 'timestamp', nullable: true })
   finishedAt: Date | null;

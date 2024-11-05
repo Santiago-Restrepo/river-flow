@@ -1,21 +1,28 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import Flow from '../domain/flow.entity';
 import ProcessStatus from 'src/shared/enums/process-status.enum';
 import { RunStepService } from 'src/modules/step/application/run-step.service';
 import { FlowRepository } from '../domain/flow.repository';
+import { FlowExecutionRepository } from 'src/modules/flow-execution/domain/flow-execution.repository';
+import ExecutionStatus from 'src/shared/enums/execution-status.enum';
+import FlowExecution from 'src/modules/flow-execution/domain/flow-execution.entity';
 
 @Injectable()
 export class RunFlowService {
   constructor(
     @Inject('FlowRepository')
     private readonly flowRepository: FlowRepository,
+    private readonly flowExecutionRepository: FlowExecutionRepository,
     private readonly runStepService: RunStepService,
   ) {}
 
   async run(id: number) {
     const flow = await this.#findFlowToRun(id);
+    const execution = await this.flowExecutionRepository.createExecution({
+      flowId: flow.id,
+    });
+
     try {
-      await this.#start(flow);
+      await this.#start(execution);
       this.#runNextStep(flow);
       return flow;
     } catch (error) {
@@ -35,12 +42,11 @@ export class RunFlowService {
     return flow;
   }
 
-  async #start(flow: Flow) {
-    flow.status = ProcessStatus.RUNNING;
-    await this.flowRepository.save(flow);
+  async #start(execution: FlowExecution) {
+    return this.flowExecutionRepository.runExecution(execution);
   }
 
-  async #runNextStep(flow: Flow) {
+  async #runNextStep(flow: FlowExecution) {
     const nextStep = await this.runStepService.findOne({
       where: { flowId: flow.id, status: ProcessStatus.PENDING },
       order: { order: 'ASC' },
@@ -66,7 +72,7 @@ export class RunFlowService {
   }
 
   async #finish(
-    flow: Flow,
+    flow: FlowExecution,
     status: ProcessStatus = ProcessStatus.SUCCESS,
     errorMessage?: string,
   ) {
